@@ -61,6 +61,8 @@ class AggreData extends Command
 
         }
 
+        echo "End AggreData!\n";
+
         return 0;
     }
 }
