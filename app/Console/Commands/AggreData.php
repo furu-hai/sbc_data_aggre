@@ -13,7 +13,9 @@ class AggreData extends Command
      *
      * @var string
      */
-    protected $signature = 'data:aggre';
+    protected $signature = 'data:aggre
+                            {object* : The objects will be collectted data}
+                            {--schema=* : Specific slave schemas to process}';
 
     /**
      * The console command description.
@@ -40,13 +42,28 @@ class AggreData extends Command
     public function handle()
     {
         echo "Start AggreData!\n";
+        $objects = $this->argument('object');
+        echo "Objects will be processed:";
+        print_r($objects);
+        $schemas = $this->option('schema');
+        echo "Schemes will be processed:";
+        print_r($schemas);
+
         $masterSchema = config('aggreschemas.master_schemas');
         $slaveSchemas = explode(',', config('aggreschemas.slave_schemas'));
-        echo "Schemes will be processed:";
-        dump($slaveSchemas);
-        foreach ($slaveSchemas as $slaveSchema) {
-            echo "Collect data from schema [$slaveSchema]\n";
 
+
+
+        foreach ($schemas as $slaveSchema) {
+            if (!in_array($slaveSchema, $slaveSchemas)) {
+                echo "The provided schema [$slaveSchema] is not existed in the configuration!\n";
+                continue;
+            } else {
+                echo "Collect data from schema [$slaveSchema]...\n";
+            }
+
+
+            /*
             config(['database.connections.pgsql.schema' => $slaveSchema]);
             DB::reconnect('pgsql');
 
@@ -58,6 +75,7 @@ class AggreData extends Command
             $contacts->each(function ($contact, $key) {
                 Contact::updateOrCreate($contact->toArray());
             });
+            */
 
         }
 
