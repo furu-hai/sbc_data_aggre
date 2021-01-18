@@ -2,30 +2,38 @@
 
 namespace App\Services\DataAggre;
 
-class DataAgrreService
-{
-    private string $slaveScheme;
-    private string $masterSchema;
-    private array $aggreObjs;
+use Exception;
 
-    public function __construct(
-        string $slaveScheme,
+class DataAggreService
+{
+    public function __construct()
+    {
+
+    }
+
+    public function transformObjects(
         string $masterSchema,
+        array $slaveSchemes,
         AggreObjectInterface ...$aggreObjs
     ) {
-        $this->slaveScheme = $slaveScheme;
-        $this->masterSchema = $masterSchema;
-        $this->aggreObjs = $aggreObjs;
+        if ($masterSchema == null || $slaveSchemes == null || !count($slaveSchemes) || $aggreObjs == null || !count($aggreObjs)) {
+            return null;
+        }
+
+        foreach ($aggreObjs as $aggreObj) {
+            try {
+                foreach($slaveSchemes as $slaveSchema) $this->transformObject($masterSchema, $slaveSchema, $aggreObj);
+            } catch (Exception $e) {
+
+            }
+        }
     }
 
-    public function transformObjects()
-    {
-        foreach($this->aggreObjs as $aggreObj) $this->transformObject($aggreObj);
-
-    }
-
-    private function transformObject(AggreObjectInterface $aggreObj)
-    {
-        $aggreObj->transformDataBetweenSchema($this->slaveScheme, $this->masterSchema);
+    private function transformObject(
+        string $masterSchema,
+        string $slaveSchemey,
+        AggreObjectInterface $aggreObj
+    ) {
+        $aggreObj->transformDataBetweenSchema($slaveSchemey, $masterSchema);
     }
 }
