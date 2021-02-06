@@ -47,3 +47,8 @@ php artisan db:seed
 ```sh
 php artisan serve
 ```
+
+- Run batch
+```sh
+php artisan data:aagre contact
+```
